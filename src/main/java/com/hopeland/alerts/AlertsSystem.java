@@ -1,6 +1,8 @@
 package com.hopeland.alerts;
 
+import com.hopeland.alerts.events.eventbus.MongoChangeBus;
 import com.hopeland.alerts.handler.DataHandler;
+import com.hopeland.alerts.listeners.MongoListener;
 import com.hopeland.alerts.mongo.DBManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +38,13 @@ public class AlertsSystem {
     }
 
     public void setup() {
+        registerListeners();
         new DataHandler();
+    }
+
+    public void registerListeners() {
+        MongoChangeBus mongoChangeBus = dbManager.getDatabase().getMongoChangeBus();
+        mongoChangeBus.registerListener(new MongoListener());
     }
 
     public static AlertsSystem getInstance() {

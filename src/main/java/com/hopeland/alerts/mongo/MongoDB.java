@@ -2,11 +2,14 @@ package com.hopeland.alerts.mongo;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.hopeland.alerts.AlertsSystem;
+import com.hopeland.alerts.events.eventbus.MongoChangeBus;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
 import lombok.Getter;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -14,6 +17,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import javax.swing.*;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -26,6 +30,7 @@ public class MongoDB {
 
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
+    @Getter private MongoChangeBus mongoChangeBus;
 
     @Getter private MongoCollection<Document> sensors;
     @Getter private MongoCollection<Document> alerts;
@@ -48,6 +53,8 @@ public class MongoDB {
 
                 sensors = mongoDatabase.getCollection("sensors");
                 alerts = mongoDatabase.getCollection("alerts");
+
+                (mongoChangeBus = new MongoChangeBus()).init(sensors.watch(List.of(Aggregates.match(Filters.eq("status", "pending")))).iterator());
 
                 System.out.println("Successfully connected to MONGO database");
                 alertsSystem.getDbManager().setConfirmed(true);
