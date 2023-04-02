@@ -8,8 +8,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
 import lombok.Getter;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -17,7 +15,6 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import javax.swing.*;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -25,7 +22,8 @@ public class MongoDB {
 
     private AlertsSystem alertsSystem;
 
-    private String connectionURL = "mongodb+srv://hopelandsystems.dobnt5r.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
+    //private String connectionURL = "mongodb+srv://hopelandsystems.dobnt5r.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
+    private String connectionURL = "mongodb+srv://java:RHm8RK3XTtftFln1@hopelandsystems.dobnt5r.mongodb.net/?retryWrites=true&w=majority";
     private String databaseName = "hopelandsystems";
 
     private MongoClient mongoClient;
@@ -54,8 +52,7 @@ public class MongoDB {
                 sensors = mongoDatabase.getCollection("sensors");
                 alerts = mongoDatabase.getCollection("alerts");
 
-                (mongoChangeBus = new MongoChangeBus()).init(sensors.watch(List.of(Aggregates.match(Filters.eq("status", "pending")))).iterator());
-
+                (mongoChangeBus = new MongoChangeBus()).init(sensors.watch().iterator());
                 System.out.println("Successfully connected to MONGO database");
                 alertsSystem.getDbManager().setConfirmed(true);
 
