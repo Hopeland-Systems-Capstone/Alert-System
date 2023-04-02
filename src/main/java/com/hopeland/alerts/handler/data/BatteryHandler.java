@@ -12,10 +12,10 @@ public class BatteryHandler extends DataHandler {
     }
 
     @Override
-    public void runTest(String sensorName, double newValue) {
-        super.runTest(sensorName, newValue);
+    public void runTest(int sensorID, double newValue) {
+        super.runTest(sensorID, newValue);
         if (newValue <= BATTERY_MIN) {
-            alertHandler.alert(DataType.BATTERY, sensorName, "Battery is low");
+            alertHandler.alert(DataType.BATTERY, sensorID, "Battery is low");
         }
     }
 

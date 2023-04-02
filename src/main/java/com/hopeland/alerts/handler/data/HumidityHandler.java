@@ -21,9 +21,9 @@ public class HumidityHandler extends DataHandler {
     }
 
     @Override
-    public void runTest(String sensorName, double newValue) {
-        super.runTest(sensorName, newValue);
-        Document sensor = alertsSystem.getDbManager().getDatabase().getSensors().find(Filters.eq("name", sensorName)).first();
+    public void runTest(int sensorID, double newValue) {
+        super.runTest(sensorID, newValue);
+        Document sensor = alertsSystem.getDbManager().getDatabase().getSensors().find(Filters.eq("sensor_id", sensorID)).first();
         if (sensor != null) {
             long cutoffTime = Instant.now().minus(Duration.ofHours(HUMIDITY_TIMESCALE)).toEpochMilli();
             List<Double> data = new ArrayList<>();
@@ -35,16 +35,16 @@ public class HumidityHandler extends DataHandler {
 
             double currentHumidityNormalized = normalize(newValue, data);
             if (currentHumidityNormalized >= STD_DEV_BOUNDS) {
-                alertHandler.alert(DataType.HUMIDITY, sensorName, "A spike in humidity detected");
+                alertHandler.alert(DataType.HUMIDITY, sensorID, "A spike in humidity detected");
             }
             if (currentHumidityNormalized <= STD_DEV_BOUNDS) {
-                alertHandler.alert(DataType.HUMIDITY, sensorName, "A drop in humidity detected");
+                alertHandler.alert(DataType.HUMIDITY, sensorID, "A drop in humidity detected");
             }
             if (newValue >= HUMIDITY_MAX) {
-                alertHandler.alert(DataType.HUMIDITY, sensorName, "Humidity exceeds normal range");
+                alertHandler.alert(DataType.HUMIDITY, sensorID, "Humidity exceeds normal range");
             }
             if (newValue <= HUMIDITY_MIN) {
-                alertHandler.alert(DataType.HUMIDITY, sensorName, "Humidity below normal range");
+                alertHandler.alert(DataType.HUMIDITY, sensorID, "Humidity below normal range");
             }
         }
     }

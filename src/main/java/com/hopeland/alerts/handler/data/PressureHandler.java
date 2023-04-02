@@ -21,9 +21,9 @@ public class PressureHandler extends DataHandler {
     }
 
     @Override
-    public void runTest(String sensorName, double newValue) {
-        super.runTest(sensorName, newValue);
-        Document sensor = alertsSystem.getDbManager().getDatabase().getSensors().find(Filters.eq("name", sensorName)).first();
+    public void runTest(int sensorID, double newValue) {
+        super.runTest(sensorID, newValue);
+        Document sensor = alertsSystem.getDbManager().getDatabase().getSensors().find(Filters.eq("sensor_id", sensorID)).first();
         if (sensor != null) {
             long cutoffTime = Instant.now().minus(Duration.ofHours(BARO_PRESSURE_TIMESCALE)).toEpochMilli();
             List<Double> data = new ArrayList<>();
@@ -35,16 +35,16 @@ public class PressureHandler extends DataHandler {
 
             double currentBaroPressureNormalized = normalize(newValue, data);
             if (currentBaroPressureNormalized >= STD_DEV_BOUNDS) {
-                alertHandler.alert(DataType.PRESSURE, sensorName, "A spike in barometric pressure detected");
+                alertHandler.alert(DataType.PRESSURE, sensorID, "A spike in barometric pressure detected");
             }
             if (currentBaroPressureNormalized <= STD_DEV_BOUNDS) {
-                alertHandler.alert(DataType.PRESSURE, sensorName, "A drop in barometric pressure detected");
+                alertHandler.alert(DataType.PRESSURE, sensorID, "A drop in barometric pressure detected");
             }
             if (newValue >= BARO_PRESSURE_MAX) {
-                alertHandler.alert(DataType.PRESSURE, sensorName, "Barometric pressure exceeds normal range");
+                alertHandler.alert(DataType.PRESSURE, sensorID, "Barometric pressure exceeds normal range");
             }
             if (newValue <= BARO_PRESSURE_MIN) {
-                alertHandler.alert(DataType.PRESSURE, sensorName, "Barometric pressure below normal range");
+                alertHandler.alert(DataType.PRESSURE, sensorID, "Barometric pressure below normal range");
             }
         }
     }

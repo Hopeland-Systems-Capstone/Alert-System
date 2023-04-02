@@ -8,18 +8,18 @@ import java.util.HashMap;
 @Getter
 public class Sensor {
 
-    @Getter private static HashMap<String, Sensor> sensors = new HashMap<>();
+    @Getter private static HashMap<Integer, Sensor> sensors = new HashMap<>();
 
-    private String name;
+    private int id;
     private HashMap<DataHandler.DataType, Long> lastAlert;
 
-    public Sensor(String name) {
-        this.name = name;
+    public Sensor(int id) {
+        this.id = id;
         this.lastAlert = new HashMap<>();
         for (DataHandler.DataType dataType : DataHandler.DataType.values()) {
             lastAlert.put(dataType, -1L);
         }
-        sensors.put(name, this);
+        sensors.put(id, this);
     }
 
 }

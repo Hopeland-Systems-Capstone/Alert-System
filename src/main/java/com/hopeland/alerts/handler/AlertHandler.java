@@ -15,8 +15,8 @@ public class AlertHandler {
     }
 
     //TODO: Send alerts to users who have a sensor
-    public void alert(DataHandler.DataType dataType, String sensorName, String alert) {
-        Sensor sensor = Sensor.getSensors().get(sensorName);
+    public void alert(DataHandler.DataType dataType, int sensorID, String alert) {
+        Sensor sensor = Sensor.getSensors().get(sensorID);
         long lastAlert = sensor.getLastAlert().get(dataType);
         if (System.currentTimeMillis() - lastAlert > (dataType == DataHandler.DataType.BATTERY ? MINUTES_BETWEEN_BATTERY_ALERTS : MINUTES_BETWEEN_ALERTS) * 60000) {
             sensor.getLastAlert().put(dataType, System.currentTimeMillis());

@@ -37,9 +37,9 @@ public abstract class DataHandler {
         this.alertHandler = alertsSystem.getAlertHandler();
     }
 
-    public void runTest(String sensorName, double newValue) {
-        if (!Sensor.getSensors().containsKey(sensorName))
-            new Sensor(sensorName);
+    public void runTest(int sensorID, double newValue) {
+        if (!Sensor.getSensors().containsKey(sensorID))
+            new Sensor(sensorID);
     }
 
     protected double normalize(double value, List<Double> data) {

@@ -21,9 +21,9 @@ public class CO2Handler extends DataHandler {
     }
 
     @Override
-    public void runTest(String sensorName, double newValue) {
-        super.runTest(sensorName, newValue);
-        Document sensor = alertsSystem.getDbManager().getDatabase().getSensors().find(Filters.eq("name", sensorName)).first();
+    public void runTest(int sensorID, double newValue) {
+        super.runTest(sensorID, newValue);
+        Document sensor = alertsSystem.getDbManager().getDatabase().getSensors().find(Filters.eq("sensor_id", sensorID)).first();
         if (sensor != null) {
             long cutoffTime = Instant.now().minus(Duration.ofHours(CO2_TIMESCALE)).toEpochMilli();
             List<Double> data = new ArrayList<>();
@@ -35,16 +35,16 @@ public class CO2Handler extends DataHandler {
 
             double currentCO2Normalized = normalize(newValue, data);
             if (currentCO2Normalized >= STD_DEV_BOUNDS) {
-                alertHandler.alert(DataType.CO2, sensorName, "A spike in CO2 level detected");
+                alertHandler.alert(DataType.CO2, sensorID, "A spike in CO2 level detected");
             }
             if (currentCO2Normalized <= STD_DEV_BOUNDS) {
-                alertHandler.alert(DataType.CO2, sensorName, "A drop in CO2 level detected");
+                alertHandler.alert(DataType.CO2, sensorID, "A drop in CO2 level detected");
             }
             if (newValue >= CO2_MAX) {
-                alertHandler.alert(DataType.CO2, sensorName, "CO2 level exceeds normal range");
+                alertHandler.alert(DataType.CO2, sensorID, "CO2 level exceeds normal range");
             }
             if (newValue <= CO2_MIN) {
-                alertHandler.alert(DataType.CO2, sensorName, "CO2 level below normal range");
+                alertHandler.alert(DataType.CO2, sensorID, "CO2 level below normal range");
             }
         }
     }
