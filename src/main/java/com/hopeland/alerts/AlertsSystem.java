@@ -1,6 +1,7 @@
 package com.hopeland.alerts;
 
 import com.hopeland.alerts.events.eventbus.MongoChangeBus;
+import com.hopeland.alerts.handler.AlertHandler;
 import com.hopeland.alerts.handler.DataHandler;
 import com.hopeland.alerts.listeners.MongoListener;
 import com.hopeland.alerts.mongo.DBManager;
@@ -17,6 +18,8 @@ public class AlertsSystem {
 
     @Getter private Scheduler scheduler;
     @Getter @Setter private DBManager dbManager;
+    @Getter private AlertHandler alertHandler;
+    @Getter private DataHandler dataHandler;
 
     public void enable() {
         alertsSystem = this;
@@ -37,6 +40,8 @@ public class AlertsSystem {
         Logger mongoLogger = Logger.getLogger("org.mongodb.driver");
         mongoLogger.setLevel(Level.WARNING);
         scheduler = new Scheduler();
+        alertHandler = new AlertHandler();
+        dataHandler = new DataHandler();
         dbManager = new DBManager();
 
 
@@ -55,7 +60,6 @@ public class AlertsSystem {
 
     public void setup() {
         registerListeners();
-        new DataHandler();
     }
 
     public void registerListeners() {

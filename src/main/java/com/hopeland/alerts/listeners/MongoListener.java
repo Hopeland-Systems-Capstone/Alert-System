@@ -8,6 +8,9 @@ public class MongoListener {
     @EventHandler
     public void onMongoChange(MongoChangeEvent event) {
         System.out.println("Mongo change detected");
+
+        //TODO: Figure out how to implement this
+        //AlertsSystem.getInstance().getDataHandler().runTest();
     }
 
 }
