@@ -1,31 +1,30 @@
 package com.hopeland.alerts.handler;
 
 import com.hopeland.alerts.AlertsSystem;
-
-/*
-
-This algorithm detects spikes and dips in measurements on a single sensor basis. (I assume
-that this is how Paul would like the algorithm to work; it can easily be modified to detect
-anomolies in the average reading for all sensors.)
-
-It will throw an alert in one of four cases:
-	1. A reading is significantly higher than the average of recent readings.
-	2. A reading is significantly lower than the average of recent readings.
-	3. A reading exceeds a determined maximum value for its type of data.
-	4. A reading falls below a determined minimum value for its type of data.
-
-*/
+import com.hopeland.alerts.objects.Sensor;
 
 public class AlertHandler {
 
     private AlertsSystem alertsSystem;
 
+    private final int MINUTES_BETWEEN_ALERTS = 1; // Rate limits alerts at 1 alert per data type per minute
+    private final int MINUTES_BETWEEN_BATTERY_ALERTS = 60; // Rate limits battery alerts at 1 per hour
+
     public AlertHandler() {
         this.alertsSystem = AlertsSystem.getInstance();
     }
 
-    //TODO: Send alerts
-    public void alert(String string) {
+    //TODO: Send alerts to users who have a sensor
+    public void alert(DataHandler.DataType dataType, String sensorName, String alert) {
+        Sensor sensor = Sensor.getSensors().get(sensorName);
+        long lastAlert = sensor.getLastAlert().get(dataType);
+        if (System.currentTimeMillis() - lastAlert > (dataType == DataHandler.DataType.BATTERY ? MINUTES_BETWEEN_BATTERY_ALERTS : MINUTES_BETWEEN_ALERTS) * 60000) {
+            sensor.getLastAlert().put(dataType, System.currentTimeMillis());
+            send(sensor, alert);
+        }
+    }
+
+    public void send(Sensor sensor, String alert) {
 
     }
 

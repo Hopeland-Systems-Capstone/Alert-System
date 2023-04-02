@@ -19,6 +19,7 @@ public class MongoChangeBus {
 
     private final Set<Object> listeners = new HashSet<>();
     private final BlockingQueue<MongoChangeEvent> eventQueue = new LinkedBlockingQueue<>();
+    private boolean running;
 
     public void init(MongoCursor<ChangeStreamDocument<Document>> cursor) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -44,27 +45,10 @@ public class MongoChangeBus {
         listeners.remove(listener);
     }
 
-    public void notifyListeners(MongoChangeEvent event) {
-        listeners.forEach(listener -> {
-            Method[] methods = listener.getClass().getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.isAnnotationPresent(EventHandler.class)) {
-                    Class<?>[] parameterTypes = method.getParameterTypes();
-                    if (parameterTypes.length == 1 && parameterTypes[0].equals(MongoChangeEvent.class)) {
-                        try {
-                            eventQueue.put(event);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
-    }
-
     public void startEventLoop() {
         System.out.println("Started event loop");
-        while (true) {
+        this.running = true;
+        while (this.running) {
             try {
                 MongoChangeEvent event = eventQueue.take();
                 listeners.forEach(listener -> {
@@ -86,6 +70,10 @@ public class MongoChangeBus {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public void endEventLoop() {
+        this.running = false;
     }
 
 }

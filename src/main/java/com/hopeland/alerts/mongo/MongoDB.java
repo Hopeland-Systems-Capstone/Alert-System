@@ -20,11 +20,11 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class MongoDB {
 
-    private AlertsSystem alertsSystem;
+    private final AlertsSystem alertsSystem;
 
     //private String connectionURL = "mongodb+srv://hopelandsystems.dobnt5r.mongodb.net/?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority";
-    private String connectionURL = "mongodb+srv://java:RHm8RK3XTtftFln1@hopelandsystems.dobnt5r.mongodb.net/?retryWrites=true&w=majority";
-    private String databaseName = "hopelandsystems";
+    private final String connectionURL = "mongodb+srv://java:RHm8RK3XTtftFln1@hopelandsystems.dobnt5r.mongodb.net/?retryWrites=true&w=majority";
+    private final String databaseName = "hopelandsystems";
 
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
@@ -56,7 +56,7 @@ public class MongoDB {
                 System.out.println("Successfully connected to MONGO database");
                 alertsSystem.getDbManager().setConfirmed(true);
 
-                SwingUtilities.invokeLater(() -> alertsSystem.setup());
+                SwingUtilities.invokeLater(alertsSystem::setup);
 
             } catch (Exception ex) {
                 ex.printStackTrace();

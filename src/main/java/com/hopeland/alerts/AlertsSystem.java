@@ -2,24 +2,29 @@ package com.hopeland.alerts;
 
 import com.hopeland.alerts.events.eventbus.MongoChangeBus;
 import com.hopeland.alerts.handler.AlertHandler;
-import com.hopeland.alerts.handler.DataHandler;
+import com.hopeland.alerts.handler.data.*;
 import com.hopeland.alerts.listeners.MongoListener;
 import com.hopeland.alerts.mongo.DBManager;
 import com.hopeland.alerts.scheduler.Scheduler;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Getter
 public class AlertsSystem {
 
     private static AlertsSystem alertsSystem;
 
-    @Getter private Scheduler scheduler;
-    @Getter @Setter private DBManager dbManager;
-    @Getter private AlertHandler alertHandler;
-    @Getter private DataHandler dataHandler;
+    private Scheduler scheduler;
+    private DBManager dbManager;
+    private AlertHandler alertHandler;
+
+    private BatteryHandler batteryHandler;
+    private TemperatureHandler temperatureHandler;
+    private HumidityHandler humidityHandler;
+    private CO2Handler co2Handler;
+    private PressureHandler pressureHandler;
 
     public void enable() {
         alertsSystem = this;
@@ -29,6 +34,7 @@ public class AlertsSystem {
 
     public void disable() {
         System.out.println("Exiting");
+        dbManager.getDatabase().getMongoChangeBus().endEventLoop();
         if (dbManager.isConnected() && dbManager.isConfirmed())
             dbManager.getDatabase().disconnect();
     }
@@ -41,9 +47,14 @@ public class AlertsSystem {
         mongoLogger.setLevel(Level.WARNING);
         scheduler = new Scheduler();
         alertHandler = new AlertHandler();
-        dataHandler = new DataHandler();
-        dbManager = new DBManager();
 
+        batteryHandler = new BatteryHandler();
+        temperatureHandler = new TemperatureHandler();
+        humidityHandler = new HumidityHandler();
+        co2Handler = new CO2Handler();
+        pressureHandler = new PressureHandler();
+
+        dbManager = new DBManager();
 
         //Start Event Loop
         while (!dbManager.isConfirmed()) {

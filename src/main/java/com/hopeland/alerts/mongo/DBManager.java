@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class DBManager {
 
-    private AlertsSystem alertsSystem;
-    private MongoDB database;
+    private final AlertsSystem alertsSystem;
+    private final MongoDB database;
     private boolean confirmed = false;
 
     public DBManager() {
