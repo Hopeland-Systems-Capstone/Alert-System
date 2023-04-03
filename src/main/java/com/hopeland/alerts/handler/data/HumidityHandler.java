@@ -38,7 +38,7 @@ public class HumidityHandler extends DataHandler {
             if (currentHumidityNormalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.HUMIDITY, sensorID, "A spike in humidity detected");
             }
-            if (currentHumidityNormalized <= STD_DEV_BOUNDS) {
+            if (currentHumidityNormalized <= -1 * STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.HUMIDITY, sensorID, "A drop in humidity detected");
             }
             if (newValue >= HUMIDITY_MAX) {

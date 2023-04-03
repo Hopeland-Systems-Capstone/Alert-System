@@ -38,7 +38,7 @@ public class TemperatureHandler extends DataHandler {
             if (currentTemperatureNormalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.TEMPERATURE, sensorID, "A spike in temperature detected");
             }
-            if (currentTemperatureNormalized <= STD_DEV_BOUNDS) {
+            if (currentTemperatureNormalized <= -1 * STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.TEMPERATURE, sensorID, "A drop in temperature detected");
             }
             if (newValue >= TEMP_MAX) {

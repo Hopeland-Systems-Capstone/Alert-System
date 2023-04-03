@@ -38,7 +38,7 @@ public class PressureHandler extends DataHandler {
             if (currentBaroPressureNormalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.PRESSURE, sensorID, "A spike in barometric pressure detected");
             }
-            if (currentBaroPressureNormalized <= STD_DEV_BOUNDS) {
+            if (currentBaroPressureNormalized <= -1 * STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.PRESSURE, sensorID, "A drop in barometric pressure detected");
             }
             if (newValue >= BARO_PRESSURE_MAX) {

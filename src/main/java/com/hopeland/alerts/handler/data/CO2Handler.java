@@ -38,7 +38,7 @@ public class CO2Handler extends DataHandler {
             if (currentCO2Normalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.CO2, sensorID, "A spike in CO2 level detected");
             }
-            if (currentCO2Normalized <= STD_DEV_BOUNDS) {
+            if (currentCO2Normalized <= -1 * STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.CO2, sensorID, "A drop in CO2 level detected");
             }
             if (newValue >= CO2_MAX) {
