@@ -31,6 +31,7 @@ public class MongoDB {
     @Getter private MongoChangeBus mongoChangeBus;
 
     @Getter private MongoCollection<Document> sensors;
+    @Getter private MongoCollection<Document> users;
     @Getter private MongoCollection<Document> alerts;
 
     public MongoDB() {
@@ -50,6 +51,7 @@ public class MongoDB {
                 mongoDatabase = mongoClient.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
 
                 sensors = mongoDatabase.getCollection("sensors");
+                users = mongoDatabase.getCollection("users");
                 alerts = mongoDatabase.getCollection("alerts");
 
                 (mongoChangeBus = new MongoChangeBus()).init(sensors.watch().iterator());

@@ -34,6 +34,7 @@ public class HumidityHandler extends DataHandler {
             }
 
             double currentHumidityNormalized = normalize(newValue, data);
+            System.out.println("RESULT: Normalized humidity: " + currentHumidityNormalized + ", Standard Deviation Bounds: " + STD_DEV_BOUNDS);
             if (currentHumidityNormalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.HUMIDITY, sensorID, "A spike in humidity detected");
             }

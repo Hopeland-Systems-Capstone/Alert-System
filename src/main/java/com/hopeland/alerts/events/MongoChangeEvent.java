@@ -1,8 +1,6 @@
 package com.hopeland.alerts.events;
 
-import lombok.Getter;
-import org.bson.Document;
+import com.hopeland.alerts.handler.DataHandler;
 
-public record MongoChangeEvent(@Getter Document document) {
-
+public record MongoChangeEvent(int sensorId, DataHandler.DataType dataType, double addedValue) {
 }

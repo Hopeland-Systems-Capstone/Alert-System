@@ -34,6 +34,7 @@ public class CO2Handler extends DataHandler {
             }
 
             double currentCO2Normalized = normalize(newValue, data);
+            System.out.println("RESULT: Normalized CO2 Level: " + currentCO2Normalized + ", Standard Deviation Bounds: " + STD_DEV_BOUNDS);
             if (currentCO2Normalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.CO2, sensorID, "A spike in CO2 level detected");
             }

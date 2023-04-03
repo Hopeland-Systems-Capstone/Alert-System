@@ -1,9 +1,13 @@
 package com.hopeland.alerts.events.eventbus;
 
+import com.hopeland.alerts.AlertsSystem;
 import com.hopeland.alerts.events.MongoChangeEvent;
+import com.hopeland.alerts.handler.DataHandler;
 import com.hopeland.alerts.handler.EventHandler;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import org.bson.BsonDocument;
 import org.bson.Document;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +31,13 @@ public class MongoChangeBus {
             System.out.println("Starting eventbus");
             while (cursor.hasNext()) {
                 try {
-                    eventQueue.put(new MongoChangeEvent(cursor.next().getFullDocument()));
+                    ChangeStreamDocument<Document> document = cursor.next();
+                    int sensorId = AlertsSystem.getInstance().getDbManager().getDatabase().getSensors().find(Filters.eq("_id", document.getDocumentKey().get("_id").asObjectId())).first().getInteger("sensor_id");
+                    BsonDocument updatedFields = document.getUpdateDescription().getUpdatedFields();
+                    String dataTypeStringRaw = updatedFields.getFirstKey();
+                    DataHandler.DataType dataType = DataHandler.DataType.valueOf(dataTypeStringRaw.split("\\.")[0].toUpperCase());
+                    double newValue = updatedFields.get(dataTypeStringRaw).asDocument().getDouble("value").doubleValue();
+                    eventQueue.put(new MongoChangeEvent(sensorId, dataType, newValue));
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }

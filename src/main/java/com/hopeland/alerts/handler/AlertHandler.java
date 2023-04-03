@@ -2,6 +2,9 @@ package com.hopeland.alerts.handler;
 
 import com.hopeland.alerts.AlertsSystem;
 import com.hopeland.alerts.objects.Sensor;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.Filters;
+import org.bson.Document;
 
 public class AlertHandler {
 
@@ -14,7 +17,6 @@ public class AlertHandler {
         this.alertsSystem = AlertsSystem.getInstance();
     }
 
-    //TODO: Send alerts to users who have a sensor
     public void alert(DataHandler.DataType dataType, int sensorID, String alert) {
         Sensor sensor = Sensor.getSensors().get(sensorID);
         long lastAlert = sensor.getLastAlert().get(dataType);
@@ -25,7 +27,11 @@ public class AlertHandler {
     }
 
     public void send(Sensor sensor, String alert) {
-
+        System.out.println(alert);
+        FindIterable<Document> users = alertsSystem.getDbManager().getDatabase().getUsers().find(Filters.eq("sensors", sensor.getId()));
+        for (Document user : users) {
+            //TODO: Add alert to alerts Array for user
+        }
     }
 
 }

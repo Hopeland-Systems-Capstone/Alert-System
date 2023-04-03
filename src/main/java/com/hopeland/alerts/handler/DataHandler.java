@@ -3,8 +3,8 @@ package com.hopeland.alerts.handler;
 import com.hopeland.alerts.AlertsSystem;
 import com.hopeland.alerts.objects.Sensor;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.DoubleStream;
 
 
 /**
@@ -55,9 +55,12 @@ public abstract class DataHandler {
     }
 
     protected double stdDev(List<Double> data) {
-        DoubleStream doubleStream = data.stream().mapToDouble(Double::doubleValue);
-        double mean = doubleStream.average().orElse(Double.NaN);
-        double variance = doubleStream.map(x -> Math.pow(x - mean, 2)).average().orElse(Double.NaN);
+        double[] values = new double[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            values[i] = data.get(i);
+        }
+        double mean = Arrays.stream(values).average().orElse(Double.NaN);
+        double variance = Arrays.stream(values).map(x -> Math.pow(x - mean, 2)).average().orElse(Double.NaN);
         return Math.sqrt(variance);
     }
 

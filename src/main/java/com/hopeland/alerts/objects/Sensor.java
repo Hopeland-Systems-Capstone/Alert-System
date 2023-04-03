@@ -8,10 +8,10 @@ import java.util.HashMap;
 @Getter
 public class Sensor {
 
-    @Getter private static HashMap<Integer, Sensor> sensors = new HashMap<>();
+    @Getter private static final HashMap<Integer, Sensor> sensors = new HashMap<>();
 
-    private int id;
-    private HashMap<DataHandler.DataType, Long> lastAlert;
+    private final int id;
+    private final HashMap<DataHandler.DataType, Long> lastAlert;
 
     public Sensor(int id) {
         this.id = id;

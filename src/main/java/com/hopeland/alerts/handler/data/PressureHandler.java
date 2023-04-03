@@ -34,6 +34,7 @@ public class PressureHandler extends DataHandler {
             }
 
             double currentBaroPressureNormalized = normalize(newValue, data);
+            System.out.println("RESULT: Normalized pressure: " + currentBaroPressureNormalized + ", Standard Deviation Bounds: " + STD_DEV_BOUNDS);
             if (currentBaroPressureNormalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.PRESSURE, sensorID, "A spike in barometric pressure detected");
             }

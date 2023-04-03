@@ -34,6 +34,7 @@ public class TemperatureHandler extends DataHandler {
             }
 
             double currentTemperatureNormalized = normalize(newValue, data);
+            System.out.println("RESULT: Normalized temperature: " + currentTemperatureNormalized + ", Standard Deviation Bounds: " + STD_DEV_BOUNDS);
             if (currentTemperatureNormalized >= STD_DEV_BOUNDS) {
                 alertHandler.alert(DataType.TEMPERATURE, sensorID, "A spike in temperature detected");
             }
