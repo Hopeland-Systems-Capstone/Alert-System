@@ -8,6 +8,8 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
 import org.bson.BsonDocument;
+import org.bson.BsonInt32;
+import org.bson.BsonValue;
 import org.bson.Document;
 
 import java.lang.reflect.InvocationTargetException;
@@ -34,9 +36,16 @@ public class MongoChangeBus {
                     ChangeStreamDocument<Document> document = cursor.next();
                     int sensorId = AlertsSystem.getInstance().getDbManager().getDatabase().getSensors().find(Filters.eq("_id", document.getDocumentKey().get("_id").asObjectId())).first().getInteger("sensor_id");
                     BsonDocument updatedFields = document.getUpdateDescription().getUpdatedFields();
-                    String dataTypeStringRaw = updatedFields.getFirstKey();
+                    System.out.println(updatedFields.toJson());
+                    String dataTypeStringRaw = updatedFields.keySet().toArray(new String[updatedFields.keySet().size()])[1];
                     DataHandler.DataType dataType = DataHandler.DataType.valueOf(dataTypeStringRaw.split("\\.")[0].toUpperCase());
-                    double newValue = updatedFields.get(dataTypeStringRaw).asDocument().getDouble("value").doubleValue();
+                    double newValue;
+                    BsonValue bsonValue = updatedFields.get(dataTypeStringRaw).asDocument().get("value");
+                    if (bsonValue instanceof BsonInt32) {
+                        newValue = ((BsonInt32) bsonValue).doubleValue();
+                    } else {
+                        newValue = bsonValue.asDouble().doubleValue();
+                    }
                     eventQueue.put(new MongoChangeEvent(sensorId, dataType, newValue));
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();

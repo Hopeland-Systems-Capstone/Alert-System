@@ -29,7 +29,8 @@ public class CO2Handler extends DataHandler {
             List<Double> data = new ArrayList<>();
             for (Document reading : sensor.getList("co2", Document.class)) {
                 if (reading.getLong("time") >= cutoffTime) {
-                    data.add(reading.getDouble("value"));
+                    Object value = reading.get("value");
+                    data.add(value instanceof Integer ? ((Integer) value).doubleValue() : (Double) value);
                 }
             }
 

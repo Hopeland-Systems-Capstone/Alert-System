@@ -29,7 +29,8 @@ public class PressureHandler extends DataHandler {
             List<Double> data = new ArrayList<>();
             for (Document reading : sensor.getList("pressure", Document.class)) {
                 if (reading.getLong("time") >= cutoffTime) {
-                    data.add(reading.getDouble("value"));
+                    Object value = reading.get("value");
+                    data.add(value instanceof Integer ? ((Integer) value).doubleValue() : (Double) value);
                 }
             }
 
