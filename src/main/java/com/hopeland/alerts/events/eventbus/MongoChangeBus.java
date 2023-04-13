@@ -36,7 +36,6 @@ public class MongoChangeBus {
                     ChangeStreamDocument<Document> document = cursor.next();
                     int sensorId = AlertsSystem.getInstance().getDbManager().getDatabase().getSensors().find(Filters.eq("_id", document.getDocumentKey().get("_id").asObjectId())).first().getInteger("sensor_id");
                     BsonDocument updatedFields = document.getUpdateDescription().getUpdatedFields();
-                    System.out.println(updatedFields.toJson());
                     String dataTypeStringRaw = updatedFields.keySet().toArray(new String[updatedFields.keySet().size()])[1];
                     DataHandler.DataType dataType = DataHandler.DataType.valueOf(dataTypeStringRaw.split("\\.")[0].toUpperCase());
                     double newValue;
